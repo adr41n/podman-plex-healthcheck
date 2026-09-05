@@ -15,7 +15,10 @@
 !/PLEX-HEALTHCHECK.md
 !/plex-healthcheck.sh
 !/plex-healthcheck.service.example
+!/plex-healthcheck.timer.example
 !/plex-report-clear.sh
+!/plex-report-clear.service.example
+!/plex-report-clear.timer.example
 !/test-cron-jobs.sh
 
 # Allow descending into Plex/ to track only the sanitized Quadlet TEMPLATE,

@@ -1,0 +1,26 @@
+# Plex report-log clear timer (systemd user timer) — TEMPLATE
+#
+# This is a sanitized example. Copy it alongside the matching service unit,
+# then reload and enable it:
+#
+#   mkdir -p ~/.config/systemd/user
+#   cp plex-report-clear.timer.example ~/.config/systemd/user/plex-report-clear.timer
+#   cp plex-report-clear.service.example ~/.config/systemd/user/plex-report-clear.service
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now plex-report-clear.timer
+#
+# To run without an active login session (timers survive logout):
+#   loginctl enable-linger "$USER"
+
+[Unit]
+Description=Clear the Plex reset report log on the 1st of each month
+
+[Timer]
+# 'monthly' == *-*-01 00:00:00 (first day of each month, local time).
+OnCalendar=monthly
+# Run on next boot/opportunity if the machine was off at the scheduled time.
+Persistent=true
+Unit=plex-report-clear.service
+
+[Install]
+WantedBy=timers.target

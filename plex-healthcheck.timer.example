@@ -1,0 +1,30 @@
+# Plex health-check timer (systemd user timer) — TEMPLATE
+#
+# This is a sanitized example. Copy it alongside the matching service unit,
+# then reload and enable it:
+#
+#   mkdir -p ~/.config/systemd/user
+#   cp plex-healthcheck.timer.example ~/.config/systemd/user/plex-healthcheck.timer
+#   cp plex-healthcheck.service.example ~/.config/systemd/user/plex-healthcheck.service
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now plex-healthcheck.timer
+#
+# To run without an active login session (timers survive logout):
+#   loginctl enable-linger "$USER"
+#
+# Check the schedule with:
+#   systemctl --user list-timers 'plex-*'
+
+[Unit]
+Description=Run Plex (Podman) health check every 5 minutes
+
+[Timer]
+# Fire at :00, :05, :10, ... on the wall clock.
+OnCalendar=*:0/5
+# Catch up a missed run (e.g. machine was asleep) on the next opportunity.
+Persistent=true
+AccuracySec=15s
+Unit=plex-healthcheck.service
+
+[Install]
+WantedBy=timers.target

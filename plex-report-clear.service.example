@@ -1,0 +1,30 @@
+# Plex report-log clear (systemd user service) — TEMPLATE
+#
+# This is a sanitized example. Copy it to your rootless systemd user directory,
+# then reload the manager:
+#
+#   mkdir -p ~/.config/systemd/user
+#   cp plex-report-clear.service.example ~/.config/systemd/user/plex-report-clear.service
+#   systemctl --user daemon-reload
+#
+# This unit is triggered by plex-report-clear.timer (monthly) and has no
+# [Install] section, so it is not enabled directly — enable the timer instead:
+#
+#   systemctl --user enable --now plex-report-clear.timer
+#
+# Clear the report on demand with:
+#
+#   systemctl --user start plex-report-clear.service
+#
+# Assumes plex-report-clear.sh lives in %h/Podman. Adjust ExecStart if you
+# place it elsewhere.
+
+[Unit]
+Description=Clear the Plex reset report log (monthly)
+Documentation=file:%h/Podman/plex-report-clear.sh
+
+[Service]
+Type=oneshot
+ExecStart=%h/Podman/plex-report-clear.sh
+# Output is captured by the journal:
+#   journalctl --user -u plex-report-clear.service

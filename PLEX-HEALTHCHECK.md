@@ -17,7 +17,8 @@ is logged in.
 | `~/Podman/plex-healthcheck.sh` | Checks Plex health; restarts + reports if unhealthy. |
 | `~/Podman/plex-report-clear.sh` | Truncates the report log and writes a fresh header. |
 | `~/Podman/plex-healthcheck-report.log` | The report log (one line per restart). |
-| `plex-healthcheck.service.example` | Sanitized template of the service unit; the live unit is not tracked in git. |
+| `plex-healthcheck.{service,timer}.example` | Sanitized templates of the health-check units; the live units are not tracked in git. |
+| `plex-report-clear.{service,timer}.example` | Sanitized templates of the monthly report-clear units. |
 | `~/.config/systemd/user/plex-healthcheck.{service,timer}` | Runs the health-check every 5 min. |
 | `~/.config/systemd/user/plex-report-clear.{service,timer}` | Clears the report log monthly. |
 | `~/.config/containers/systemd/plex.container` | The Quadlet unit that defines the Plex container (generates `plex.service`). |

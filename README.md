@@ -11,16 +11,27 @@ is in [`PLEX-HEALTHCHECK.md`](./PLEX-HEALTHCHECK.md).
 ## Getting Started
 1. **Clone** this repo: `git clone https://github.com/adr41n/podman-plex-healthcheck.git`
 2. **Deploy Plex** from the Quadlet template — see [Deploying / editing the Quadlet](#deploying--editing-the-quadlet).
-3. **Install the health check**: place `plex-healthcheck.sh` and `plex-report-clear.sh` (e.g. in `~/Podman`), copy `plex-healthcheck.service.example` to `~/.config/systemd/user/plex-healthcheck.service`, and add the timers documented in [`PLEX-HEALTHCHECK.md`](./PLEX-HEALTHCHECK.md), then enable them with lingering:
+3. **Install the scripts**: place `plex-healthcheck.sh` and `plex-report-clear.sh` in `~/Podman` (or adjust the `ExecStart=` lines in the unit templates to match).
+4. **Install the units** from the sanitized templates:
+   ```bash
+   mkdir -p ~/.config/systemd/user
+   for u in plex-healthcheck.service plex-healthcheck.timer \
+            plex-report-clear.service plex-report-clear.timer; do
+     cp "$u.example" ~/.config/systemd/user/"$u"
+   done
+   systemctl --user daemon-reload
+   ```
+5. **Enable** the timers, with lingering so they run while logged out:
    `systemctl --user enable --now plex-healthcheck.timer plex-report-clear.timer && loginctl enable-linger "$USER"`
-4. **Verify**: `systemctl --user list-timers 'plex-*'` (and `systemctl --user show plex.service -p Restart` should print `Restart=always`).
+6. **Verify**: `systemctl --user list-timers 'plex-*'` (and `systemctl --user show plex.service -p Restart` should print `Restart=always`).
 
 ## Components
 | File | Role |
 | --- | --- |
 | `plex-healthcheck.sh` | Health probe + restart/report logic (runs every 5 min). |
 | `plex-report-clear.sh` | Truncates the recovery report log (runs monthly). |
-| `plex-healthcheck.service.example` | Sanitized **template** of the health-check service unit. Copy it to `~/.config/systemd/user/plex-healthcheck.service`. The live unit is **not** tracked. |
+| `plex-healthcheck.{service,timer}.example` | Sanitized **templates** of the health-check units. Copy to `~/.config/systemd/user/`. The live units are **not** tracked. |
+| `plex-report-clear.{service,timer}.example` | Sanitized **templates** of the monthly report-clear units. |
 | `Plex/plex.container.example` | Sanitized **template** of the Quadlet unit. Copy it to `~/.config/containers/systemd/plex.container` and fill in the placeholders. The real, host-specific unit is intentionally **not** tracked. |
 | `plex-healthcheck-report.log` | Runtime recovery log — one line per reset (not tracked in git). |
 
